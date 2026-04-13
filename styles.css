@@ -1,54 +1,44 @@
 body {
+  background-color: #c0c0c0;
+  font-family: Tahoma, Arial, sans-serif;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #000;
-  color: #fff;
+  padding: 0;
 }
 
-/* Top-left logo */
-.logo {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  font-weight: 700;
-  letter-spacing: 1px;
+/* Center the window */
+.window {
+  width: 400px;
+  margin: 100px auto;
+  border: 2px solid black;
+  background-color: #e0e0e0;
 }
 
-/* Center content */
-.center {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+/* Fake Windows title bar */
+.title-bar {
+  background: linear-gradient(to right, navy, blue);
+  color: white;
+  padding: 5px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Content inside */
+.content {
+  padding: 20px;
   text-align: center;
 }
 
-/* Title */
-h1 {
-  font-size: 40px;
-  margin: 0;
+/* Classic HR */
+hr {
+  border: 1px solid gray;
 }
-
-/* Accent colors */
-.blue { color: #3b82f6; }
-.red { color: #ef4444; }
-.yellow { color: #facc15; }
-.green { color: #22c55e; }
 
 /* Links */
 a {
-  color: #3b82f6;
-  text-decoration: none;
-}
-
-a:hover {
+  color: blue;
   text-decoration: underline;
 }
 
-/* Small footer nav */
-.nav {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
+a:hover {
+  color: red;
 }
