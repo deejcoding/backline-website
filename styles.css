@@ -1,0 +1,54 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #000;
+  color: #fff;
+}
+
+/* Top-left logo */
+.logo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Center content */
+.center {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+/* Title */
+h1 {
+  font-size: 40px;
+  margin: 0;
+}
+
+/* Accent colors */
+.blue { color: #3b82f6; }
+.red { color: #ef4444; }
+.yellow { color: #facc15; }
+.green { color: #22c55e; }
+
+/* Links */
+a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Small footer nav */
+.nav {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+}
