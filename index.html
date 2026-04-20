@@ -1,28 +1,213 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <title>Backline NYC</title>
-  <link rel="stylesheet" href="styles.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1280" />
+<title>Backline — Find gigs, gear, and people in NYC</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #0a0a0a; color: #fff; -webkit-font-smoothing: antialiased; }
+  body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  * { box-sizing: border-box; }
+
+  input::placeholder { color: rgba(255,255,255,0.35); }
+
+  /* Tweaks panel */
+  .tweaks {
+    position: fixed; bottom: 24px; right: 24px; z-index: 10000;
+    background: #111; border: 1px solid rgba(255,255,255,0.12);
+    padding: 18px; width: 240px; border-radius: 12px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px;
+    color: #fff; display: none;
+  }
+  .tweaks.active { display: block; }
+  .tweaks h3 {
+    margin: 0 0 14px; font-size: 14px; font-weight: 500;
+  }
+  .tweaks label {
+    display: block; font-size: 11px; color: rgba(255,255,255,0.45);
+    margin: 14px 0 8px;
+  }
+  .tweaks .btn-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tweaks .swatch {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1.5px solid transparent; cursor: pointer; padding: 0;
+  }
+  .tweaks .swatch.active { border-color: #fff; }
+  .tweaks .opt {
+    flex: 1; padding: 7px 8px; background: transparent;
+    border: 1px solid rgba(255,255,255,0.15); color: #fff;
+    font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 6px;
+  }
+  .tweaks .opt.active { background: #fff; color: #000; border-color: #fff; }
+
+  /* Layout variant: centered */
+  body[data-layout="centered"] .hero-grid {
+    grid-template-columns: 1fr !important; text-align: center;
+  }
+  body[data-layout="centered"] .hero-grid > div:first-child p,
+  body[data-layout="centered"] .hero-grid > div:first-child > div:first-child { margin-left: auto; margin-right: auto; }
+  body[data-layout="centered"] .hero-grid > div:first-child > div:last-child { justify-content: center; }
+
+  /* Layout variant: compact */
+  body[data-layout="compact"] h1 { font-size: 42px !important; }
+  body[data-layout="compact"] h2 { font-size: 30px !important; }
+</style>
 </head>
-
 <body>
+<div id="root"></div>
 
-  <div class="window">
-    <div class="title-bar">
-      <span>Backline NYC</span>
-    </div>
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+    <rect width="400" height="400" fill="#0a0a0a"/>
+    <text x="200" y="230" text-anchor="middle" font-family="Helvetica" font-weight="700" font-size="90" fill="#fff">B</text>
+  </svg>
+</template>
 
-    <div class="content">
-      <h1>Backline NYC</h1>
-      <p>Coming Soon</p>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 
-      <hr>
+<script type="text/babel" src="components/ios-frame.jsx"></script>
+<script type="text/babel" src="components/BacklinePhone.jsx"></script>
+<script type="text/babel" src="components/Sections.jsx"></script>
 
-      <p>
-        <a href="privacy.html">Privacy Policy</a>
-      </p>
-    </div>
-  </div>
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accent": "red",
+  "layout": "default"
+}/*EDITMODE-END*/;
 
+const ACCENT_MAP = {
+  red: '#EA3C2A',
+  blue: '#4A7BE0',
+  yellow: '#F4C84A',
+  green: '#5FAD5C',
+  orange: '#E87A2E',
+  white: '#ffffff',
+};
+
+function App() {
+  const [tweaks, setTweaks] = React.useState(TWEAK_DEFAULTS);
+  const [tweaksOpen, setTweaksOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    document.body.dataset.layout = tweaks.layout;
+  }, [tweaks.layout]);
+
+  React.useEffect(() => {
+    const handler = (e) => {
+      if (e.data?.type === '__activate_edit_mode') setTweaksOpen(true);
+      if (e.data?.type === '__deactivate_edit_mode') setTweaksOpen(false);
+    };
+    window.addEventListener('message', handler);
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
+  const setKey = (k, v) => {
+    const next = { ...tweaks, [k]: v };
+    setTweaks(next);
+    window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { [k]: v } }, '*');
+  };
+
+  const accent = ACCENT_MAP[tweaks.accent] || ACCENT_MAP.red;
+
+  return (
+    <>
+      <Hero accent={accent} />
+
+      <FeatureBlock
+        num="01"
+        label="ISO Feed"
+        title="Post an ISO, fill it by tonight."
+        description="In Search Of posts go live to every musician in your area. Need a bassist for Thursday at Baby's? Post it. Hear back within hours."
+        bullets={[
+          'Filter by role — 17 instruments and crafts',
+          'Auto-matched to musicians whose roles fit',
+          'Direct in-app messaging',
+        ]}
+        phoneProps={{ label: 'ISO FEED', sub: 'ISOs', tabIndex: 1 }}
+        accent={accent}
+      />
+
+      <FeatureBlock
+        num="02"
+        label="Marketplace"
+        title="Buy and sell gear, locally."
+        description="List gear you're done with. Buy what you've been hunting for. Local-first — pickup in Bushwick beats shipping from Ohio."
+        bullets={[
+          'Guitars, keys, pedals, interfaces, cables',
+          'In-app chat and local pickup',
+          'Escrow coming in v2',
+        ]}
+        phoneProps={{ label: 'MARKETPLACE', sub: 'Goods', tabIndex: 3 }}
+        accent={accent}
+        reverse
+      />
+
+      <FeatureBlock
+        num="03"
+        label="Services"
+        title="Hire the right engineer."
+        description="Mixing, mastering, session players, graphic designers — browse real portfolios, real rates, real people."
+        bullets={[
+          'Browse by craft with verified portfolios',
+          'Spotify-linked featured tracks on profiles',
+          'Book, pay, and review in one thread',
+        ]}
+        phoneProps={{ label: 'SERVICES', sub: 'Services', tabIndex: 1 }}
+        accent={accent}
+      />
+
+      <FeatureBlock
+        num="04"
+        label="Meet Artists"
+        title="Find your next band."
+        description="Discover musicians who share your genres. Shoegaze drummer hunting for a bassist? Filter, message, collaborate."
+        bullets={[
+          'Genre-matched discovery',
+          'Borough filters for local collaboration',
+          'Profiles with Spotify-embedded tracks',
+        ]}
+        phoneProps={{ label: 'MEET ARTISTS', sub: 'Meet Artists', tabIndex: 1 }}
+        accent={accent}
+        reverse
+      />
+
+      <Waitlist accent={accent} />
+      <Footer />
+
+      <div className={`tweaks ${tweaksOpen ? 'active' : ''}`}>
+        <h3>Tweaks</h3>
+
+        <label>Accent</label>
+        <div className="btn-row">
+          {Object.entries(ACCENT_MAP).map(([k, v]) => (
+            <button key={k} className={`swatch ${tweaks.accent === k ? 'active' : ''}`}
+              style={{ background: v }} onClick={() => setKey('accent', k)} title={k} />
+          ))}
+        </div>
+
+        <label>Layout</label>
+        <div className="btn-row">
+          {['default', 'centered', 'compact'].map(l => (
+            <button key={l} className={`opt ${tweaks.layout === l ? 'active' : ''}`}
+              onClick={() => setKey('layout', l)}>{l}</button>
+          ))}
+        </div>
+
+        <div style={{
+          marginTop: 16, paddingTop: 12, borderTop: '1px solid rgba(255,255,255,0.08)',
+          color: 'rgba(255,255,255,0.35)', fontSize: 11, lineHeight: 1.5,
+        }}>
+          Accent tints small details only. Wordmark keeps brand colors.
+        </div>
+      </div>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
 </body>
 </html>
