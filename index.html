@@ -88,24 +88,25 @@
       color: rgba(255,255,255,0.4);
     }
 
-    .phone {
-      width: 280px;
-      height: 560px;
-      border-radius: 40px;
-      border: 1px solid rgba(255,255,255,0.15);
-      overflow: hidden;
-      background: #111;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
-    }
-
-    .phone img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+  .phone {
+    width: 280px;
+    height: 560px;
+    border-radius: 40px;
+    border: 1px solid rgba(255,255,255,0.15);
+    overflow: hidden;
+    background: #000;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  }
+  
+  /* screen container */
+  .phone img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* key fix */
+    object-position: center;
+    display: block;
+  }
 
     .submitted input {
       border-color: #5FAD5C;
