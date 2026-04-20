@@ -162,6 +162,61 @@
 .footer a:hover {
   color: white;
 }
+  /* Mobile responsive */
+    @media (max-width: 768px) {
+      .header {
+        top: 16px;
+        left: 20px;
+      }
+
+      .page {
+        padding: 80px 20px 40px;
+      }
+
+      .container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      h1 {
+        font-size: 32px;
+        line-height: 1.1;
+      }
+
+      p {
+        max-width: 100%;
+      }
+
+      .form {
+        flex-direction: column;
+        max-width: 100%;
+      }
+
+      input, button {
+        width: 100%;
+        padding: 16px 18px;
+        font-size: 16px; /* prevents zoom on iOS */
+      }
+
+      .phone {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        aspect-ratio: 280 / 600;
+        margin: 0 auto;
+      }
+
+      .footer {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+      }
+
+      .footer .links {
+        display: flex;
+        justify-content: center;
+      }
+    }
     
   </style>
 </head>
